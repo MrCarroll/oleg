@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="WebRTC P2P YouTube synchronisation demo; without a signalling server">
+        <meta name="keywords" content="WebRTC, demo">
+        <meta name="author" content="James Carroll">
+        <title>Oleg</title>
+        <link rel="stylesheet" href="style/style.css">
+        <script type="text/javascript" src="js/logic.js">        
+        </script>
+    </head>
+    <body onload="init()">
+        <div id="setupContainer">
+            <h1 id="title">Oleg, a WebRTC demo for video synchronisation without a signalling server </h1>
+            <p>
+                Oleg is a basic <a href="https://webrtc.org/">WebRTC</a> demo demonstrating synchronisation of HTML5 video elements.
+                It demonstrates establishing a WebRTC connection without the use of a signalling server.
+                It was primarily made to emulate the <a href="https://steamcommunity.com/workshop/filedetails/?id=143148073">Cinema</a> gamemode available in Garrys Mod for personal use between me and a friend.
+                A <a href="https://en.wikipedia.org/wiki/Traversal_Using_Relays_around_NAT">TURN server</a> is not provided, so connection establishment may not be possible in several network configurations.
+                Particularly, there may be cases where a connection may only be established if one user acts as the host, depending on the results of the <a href="https://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment">ICE protocol</a>.
+                In rare situations, refreshing both peers simply refreshing the page and attempting a new connection may fix connection difficulties.
+            </p>
+            <p>
+                Peers must generate a session description profile using the UI below, and share them with an out of bounds medium.
+                For example, Steam, Facebook messenger, email, etc; any service that supports sending text is suitable, including <a href="https://en.wikipedia.org/wiki/IP_over_Avian_Carriers"IP over Avian Carrier</a></a>.
+                The initiating client, the host, sends an offer to the guest client. The guest acknowledges the hosts offer and generates a response, the answer.
+                When the host accepts the guests answer, the clients will attempt to establish a connection with directly in peer to peer topology.
+                Due to different browser defaults, users may need to be fairly rapid in exchanging SDP data to establish a connection. Mozilla Firefox gives a leeway of about 5 seconds,
+                which is usable for exchange over IM applications with a little practise. Other browsers may allow for longer or shorter durations.
+
+            </p>
+            <p>
+                Once in the main Oleg interface, the queue overlay may be triggered and hidden by pressing Q on the keyboard. 
+                Users may need to click "Play next" to actually begin taking items off of the queue.
+            </p>
+            <p>
+                As this is a demo project, it is lacking many advanced features users may desire.
+                It is highly recommended users are making use of IM or audio calls via a third party tool, so that they can determine if the session is reliable and react accordingly.
+                Ultimately, this tool is not intended to be a professional replacement for similar services, it is good enough for my own use and hopefully may benefit or educate others.
+            </p>
+            <p>
+                This project makes use of the <a href="http://stunprotocol.org">Stuntman</a> projects publically available <a href="https://en.wikipedia.org/wiki/STUN">STUN</a> instance,
+                as well as <a href="https://invidio.us">Invidious</a>, a publically available alternative YouTube frontend and API. Users may benefit from using the WebRTC projects <a href="https://test.webrtc.org/">troubleshooter.</a>
+            </p>
+            <p>
+                This demo is not associated with any of the above projects.
+            </p>
+            <div id="setupContainers">
+                <div id="setupContainerPC1">
+                    <h1>Host peer setup</h1>
+                    <div id="setupContainerPC1Syn">
+                        <button id="synButton" onclick="syn()">
+                            Act as the host and generate an offer
+                        </button>
+                        <textarea id="PC1SynTextarea" placeholder="The contents of this box should be sent to the guest client" readonly></textarea>
+                    </div>
+
+                    <div id="setupContainerPC1Ack">
+                        <button id="ackButton" onclick="ack()" disabled>
+                            Accept the guests answer answer and connect
+                        </button>
+                        <textarea id="PC1AckTextarea" placeholder="When the guest responds with type: 'answer', paste it here"></textarea>
+                    </div>
+                </div>
+                
+                <div id="setupContainerPC2">
+                    <h1>Guest peer setup</h1>
+                        <textarea id="PC2SynTextarea" placeholder="If the host peer sends type:'offer', paste it here"></textarea>
+                        <button id="synAckButton" onclick="synAck()">
+                            Accept the hosts offer and generate an answer
+                        </button>
+                        <textarea id="PC2SynAckTextarea" placeholder="The contents of this box should be sent back to the host client" readonly></textarea>
+                </div>
+            </div>
+            <footer>
+                <p>
+                    Project by <a href="https://github.com/MrCarroll/">James Carroll</a> (c) 2020 <a href="LICENSE.md">MIT license</a> source code <a href="https://github.com/MrCarroll/oleg">available here</a>
+                </p>
+            </footer>
+        </div>
+
+        <div id="mainContainer">
+            <video id="videoFrame" poster="img/logo.svg" muted>
+                Unable to generate videoframe
+            </video>
+
+            <div id="queueContainer">
+                <div id="queueList">
+                    <div id="addToQueueContainer">
+                        <input type="text" id="addToQueueInput" placeholder="URL"/>
+                        <button id="addToQueueButton" onclick="addYoutubeSrcVideo()">Add to Queue</button>
+                        <button id="PlayNextButton" onclick="loadNextVideo()">Play Next</button>
+                    </div>
+
+                    <div id="queuedItemsContainer">
+                        <div class="queuedVideo">
+                            <p>Press Q to toggle this overlay on and off</p>
+                            <p>Videos will queue here when added above</p>
+                            <p>If videos are not being played from the queue, use the Play Next button!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

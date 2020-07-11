@@ -1,0 +1,100 @@
+body{
+    background-color:grey;
+    margin:0;
+}
+
+textarea{
+    height:300px;
+    width:300px;
+}
+
+h1#title{
+    margin-left:25vw;
+    margin-right:25vw;
+}
+
+div#setupContainer p{
+    margin-left:25vw;
+    margin-right:25vw;
+    font-size:1.1em;
+}
+
+div#setupContainers{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+    margin-left:25vw;
+    margin-right:25vw;
+}
+
+div#setupContainers div{
+    display:flex;
+    flex-direction:column;
+}
+
+video#videoFrame{
+    width:100vw;
+    height:100vh;
+    background-color:grey;
+}
+
+div#queueContainer{
+    width: 25%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    position:fixed;
+    top:0;
+    bottom:0;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+div.queuedVideo{
+    background-size:cover;
+    background-position:center;
+    font-size:1.25em;
+    min-height:200px;
+    min-width:200px;
+    position:relative;
+}
+
+div.playingVideo{
+    background-size:cover;
+    background-position:center;
+    font-size:1.25em;
+    min-height:200px;
+    min-width:200px;
+    position:relative;
+}
+
+div.playingVideo p{
+    color:goldenrod;
+    background: rgba(0,0,0,0.9);
+    text-align:center;
+}
+
+div.playingVideo button{
+    bottom:0px;
+    right:0px;
+    position:absolute;
+}
+
+div.queuedVideo button{
+    bottom:0px;
+    right:0px;
+    position:absolute;
+}
+
+div.queuedVideo p{
+    color:red;
+    background: rgba(0,0,0,0.9);
+    text-align:center;
+}
+
+div#addToQueueContainer{
+    display:flex;
+}
+
+div#addToQueueContainer input{
+    flex-grow:100;
+}
