@@ -38,6 +38,10 @@ video#videoFrame{
     background-color:grey;
 }
 
+div#mainContainer{
+    position:fixed;
+}
+
 div#queueContainer{
     width: 25%;
     height:100%;
