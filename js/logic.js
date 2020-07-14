@@ -376,7 +376,7 @@ function init(){
         }
     );
 
-    video.addEventListener('play', 
+    video.addEventListener('playing', 
         () => {
             if (video.controls == false){
                 video.controls = true;
