@@ -6,7 +6,7 @@ Oleg is a small WebRTC project I made to emulate the utility of the [Cinema game
 
 It is a weekend project aimed to be simple, and demonstrate P2P connections over [WebRTC](https://webrtc.org/) without the use of a signalling server via manual exchange of [SDP](https://en.wikipedia.org/wiki/Session_Description_Protocol) metadata. A user can send their SDP profile over email, IM, etc, and establish a connection where the [ICE](https://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) protocol allows.
 
-Oleg makes use of the publically available STUN server hosted by [stunprotocol.org](http://stunprotocol.org/) and the [invidio.us](https://invidio.us/) project API for collection of YouTube metadata. 
+Oleg makes use of the publically available STUN server hosted by [stunprotocol.org](http://stunprotocol.org/) and the [invidio.us](https://invidio.us/) project API for collection of YouTube metadata, hosted on [Snopyta](https://snopyta.org/).
 
 # Using Oleg
 

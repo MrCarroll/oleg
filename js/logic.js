@@ -244,7 +244,7 @@ function addYoutubeSrcVideo(){
 
 // Playlists that I've seen have a specific form, and can handled without regex.
 function addYoutubeSrcPlaylist(URL){
-    var API = "https://invidio.us/api/v1/playlists/";
+    var API = "https://invidious.snopyta.org/api/v1/playlists/";
     var ID = new URLSearchParams(URL).get("list");
     var tempQueue = [];
 
@@ -268,7 +268,7 @@ function addYoutubeSrcPlaylist(URL){
 
 async function _addYoutubeSrc(ID){
     return new Promise((resolve, reject) => {
-        var API = "https://invidio.us/api/v1/videos/"
+        var API = "https://invidious.snopyta.org/api/v1/videos/"
         var fields = "?fields=videoId,title,formatStreams,videoThumbnails"
 
         var xmlhttp = new XMLHttpRequest();
