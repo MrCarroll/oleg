@@ -31,7 +31,6 @@ function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sendi
     }
 
     connection.addEventListener("icecandidate", async event => {
-        console.log(event);
         PC1SynTextarea.value = JSON.stringify(connection.localDescription);
     });
 
@@ -327,9 +326,9 @@ function loadNextVideo(){
         return;
     }
 
-    document.getElementById("videoFrame").src = queue[0].formatStreams[queue[0].formatStreams.length - 1].url;
+    video.src = queue[0].formatStreams[queue[0].formatStreams.length - 1].url;
     currentYTVideo = queue.shift();
-    document.getElementById("videoFrame").load(); // Rely on implicit state sync of play event handler
+    video.load(); // Rely on implicit state sync of play event handler
     generateQueueDisplay();
 }
 
