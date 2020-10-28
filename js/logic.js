@@ -52,8 +52,8 @@ function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sendi
 
     dataChannel.addEventListener("open", async event => {
         console.log(event);
-        document.getElementById("mainContainer").style.display = "";
-        document.getElementById("setupContainer").style.display = "none";
+        document.getElementById("mainContainer").classList.remove("displayNone");
+        document.getElementById("setupContainer").classList.add("displayNone");
     });
 
     dataChannel.addEventListener("message",  async event => {
@@ -334,7 +334,6 @@ function init(){
     lastSync = null;
     timeout = 0;
 
-    document.getElementById("mainContainer").style.display = "none";
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
     PC2SynTextarea.value = "";

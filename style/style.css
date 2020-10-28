@@ -8,6 +8,10 @@ textarea{
     width:300px;
 }
 
+.displayNone{
+    display: none;
+}
+
 h1#title{
     margin-left:25vw;
     margin-right:25vw;
