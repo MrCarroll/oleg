@@ -19,6 +19,7 @@ var notificationContainerText;   // Contents of ^
 var errorMessage;  //  Used to send error messages between peers to show in notifications.
 var canPlay;    //  Used to send a message to the other peer that we are ready to begin playback
 var peerCanPlay;    //  Used to begin playback by determining when the other peer is ready.
+var backend;    //  Domain name of the backend API server
 
 function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sending an offer to PC2
     try{
@@ -255,7 +256,7 @@ function addYoutubeSrcVideo(){
 
 // Playlists that I've seen have a specific form, and can handled without regex.
 function addYoutubeSrcPlaylist(URL){
-    var API = "https://invidious.snopyta.org/api/v1/playlists/";
+    var API = backend + "api/v1/playlists/";
     var ID = new URLSearchParams(URL).get("list");
     var tempQueue = [];
 
@@ -279,8 +280,8 @@ function addYoutubeSrcPlaylist(URL){
 
 async function _addYoutubeSrc(ID){
     return new Promise((resolve, reject) => {
-        var API = "https://invidious.snopyta.org/api/v1/videos/"
-        var fields = "?fields=videoId,title,formatStreams,videoThumbnails"
+        var API = backend + "api/v1/videos/";
+        var fields = "?fields=videoId,title,formatStreams,videoThumbnails";
 
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", API + ID + fields, true);
@@ -352,6 +353,7 @@ function init(){
     errorMessage = "";
     canPlay = false;
     peerCanPlay = false;
+    backend = "https://invidious.snopyta.org/";
 
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
