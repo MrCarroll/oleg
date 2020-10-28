@@ -372,12 +372,6 @@ function init(){
         }
     );
 
-    video.addEventListener('seeked', 
-        () => {
-            syncState();
-        }
-    );
-
     video.addEventListener('pause', 
         () => {
             if (lastSync == null){
