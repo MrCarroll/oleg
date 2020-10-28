@@ -291,6 +291,7 @@ async function _addYoutubeSrc(ID){
                 retval.videoThumbnails = retval.videoThumbnails[0].url; //  This contains a lot of unnecessary data that adds network overhead, so remove it.
                 resolve(retval);
             } else{
+                showNotification("Error adding videoID: " + ID);
                 reject(xmlhttp.status);
             }
         };
@@ -408,7 +409,7 @@ function init(){
     (error) => {
         console.log(error);
         showNotification("Attempt to load video has failed, the peers may not be fully synced as a result.");
-        errorMessage = "The peer failed to play a video from the queue. ( " + currentYTVideo.title + ")";
+        errorMessage = "The peer failed to play a video from the queue. ( " + currentYTVideo.title + " )";
         syncState();
         errorMessage = "";
     }
