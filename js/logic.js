@@ -14,6 +14,8 @@ var synAckButton;
 var ackButton;
 var lastSync;   //  Object containing the last message send by the peer
 var timeout;    //  Unix timestamp to prevent excessive synchronisation events from interface spam
+var notificationContainer;    // Div container notification UI
+var notificationContainerText;   // Contents of ^
 
 function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sending an offer to PC2
     try{
@@ -35,16 +37,16 @@ function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sendi
             return;
         }
         if (connection.iceConnectionState == "disconnected"){
-            alert("The other peer may have disconnected");
+            showNotification("The other peer may have disconnected");
         }
         if (connection.iceConnectionState == "failed"){
-            alert("The other peer has most likely disconnected");
+            showNotification("The other peer has most likely disconnected");
         }
         if (connection.iceConnectionState == "closed"){
-            alert("The other peer has disconnected and cannot reconnect, content will continue to play but will not sync");
+            showNotification("The other peer has disconnected and cannot reconnect, content will continue to play but will not sync");
         }
         if (connection.iceConnectionState == "connected"){
-            alert("The other peer has connected and is now syncing");
+            showNotification("The other peer has connected and is now syncing");
         }
     });
 
@@ -174,8 +176,8 @@ function synAck(){
             lastSync = JSON.parse(event.data);
             handleSyncState();
         }
-        document.getElementById("mainContainer").style.display = "";
-        document.getElementById("setupContainer").style.display = "none";
+        document.getElementById("mainContainer").classList.remove("displayNone");
+        document.getElementById("setupContainer").classList.add("displayNone");
     });
 
     connection.addEventListener("iceconnectionstatechange", () => {
@@ -184,16 +186,16 @@ function synAck(){
             return;
         }
         if (connection.iceConnectionState == "disconnected"){
-            alert("The other peer may have disconnected");
+            showNotification("The other peer may have disconnected");
         }
         if (connection.iceConnectionState == "failed"){
-            alert("The other peer has most likely disconnected");
+            showNotification("The other peer has most likely disconnected");
         }
         if (connection.iceConnectionState == "closed"){
-            alert("The other peer has disconnected and cannot reconnect");
+            showNotification("The other peer has disconnected and cannot reconnect");
         }
         if (connection.iceConnectionState == "connected"){
-            alert("The other peer has connected and is now syncing");
+            showNotification("The other peer has connected and is now syncing");
         }
     });
 
@@ -333,6 +335,8 @@ function init(){
     ackButton = document.getElementById("ackButton");
     lastSync = null;
     timeout = 0;
+    notificationContainer = document.getElementById("notificationsContainer");
+    notificationContainerText = document.getElementById("notification");
 
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
@@ -457,4 +461,13 @@ function removeFromQueue(position){
     queue.splice(position, 1);
     syncState();
     generateQueueDisplay();
+}
+
+function showNotification(text){
+    notificationContainerText.innerHTML = text;
+    notificationsContainer.classList.remove("displayNone");
+    setTimeout(() => {
+        notificationContainerText.innerHTML = "";
+        notificationsContainer.classList.add("displayNone");
+    }, 5000);
 }

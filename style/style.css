@@ -8,6 +8,23 @@ textarea{
     width:300px;
 }
 
+div#notificationsContainer{
+    position: fixed;
+    right: 5vw;
+    top: 5vh;
+    max-width:25vw;
+    max-height:25vh;
+    background:rgba(0,0,0,0.8);
+    font-size:1.2em;
+    color:white;
+    text-align:center;
+    border-radius: 25px;
+}
+
+p#notification{
+    margin:10px;
+}
+
 .displayNone{
     display: none;
 }
