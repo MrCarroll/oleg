@@ -289,7 +289,8 @@ async function _addYoutubeSrc(ID){
             if (this.readyState == 4 && this.status == 200) {
                 console.log("Parsed metadata of: " + ID);
                 var retval = JSON.parse(this.responseText);
-                retval.videoThumbnails = retval.videoThumbnails[0].url; //  This contains a lot of unnecessary data that adds network overhead, so remove it.
+                retval.videoThumbnail = retval.videoThumbnails[0].url; 
+                retval.videoThumbnails = {} //  This contains a lot of unnecessary data that adds network overhead, so remove it.
                 resolve(retval);
             } else{
                 showNotification("Error adding videoID: " + ID);
