@@ -16,6 +16,7 @@ var lastSync;   //  Object containing the last message send by the peer
 var timeout;    //  Unix timestamp to prevent excessive synchronisation events from interface spam
 var notificationContainer;    // Div container notification UI
 var notificationContainerText;   // Contents of ^
+var errorMessage;  //  Used to send error messages between peers to show in notifications.
 
 function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sending an offer to PC2
     try{
@@ -93,11 +94,13 @@ function syncState(){
         time: video.currentTime,
         queue: queue,
         src: video.currentSrc,
-        currentYTVideo: currentYTVideo
+        currentYTVideo: currentYTVideo,
+        error: errorMessage
     };
     dataChannel.send(JSON.stringify(state));
 }
 
+// sync data has already been parsed and is available in lastSync
 function handleSyncState(){
     var currentTime = new Date().getTime();
     if (currentTime < timeout){
@@ -107,6 +110,11 @@ function handleSyncState(){
 
     timeout = currentTime + 500;
     var shouldGenerateQueue = false;
+
+    if (lastSync.error !== ""){
+        showNotification(lastSync.error);
+        return;
+    }
 
     if (video.currentSrc != lastSync.src){
         video.src = lastSync.src;
@@ -337,6 +345,7 @@ function init(){
     timeout = 0;
     notificationContainer = document.getElementById("notificationsContainer");
     notificationContainerText = document.getElementById("notification");
+    errorMessage = "";
 
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
@@ -400,6 +409,10 @@ function init(){
     video.addEventListener('error', 
     (error) => {
         console.log(error);
+        showNotification("Attempt to load video has failed, the peers may not be fully synced as a result.");
+        errorMessage = "The peer failed to play a video from the queue. ( " + currentYTVideo.title + ")";
+        syncState();
+        errorMessage = "";
     }
 );
     
