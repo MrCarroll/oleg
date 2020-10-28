@@ -33,10 +33,6 @@ function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sendi
     });
 
     connection.addEventListener("iceconnectionstatechange", () => {
-        if (document.getElementById("mainContainer").style.display == "none")
-        {
-            return;
-        }
         if (connection.iceConnectionState == "disconnected"){
             showNotification("The other peer may have disconnected");
         }
@@ -54,28 +50,24 @@ function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sendi
     dataChannel = connection.createDataChannel("data");
 
     dataChannel.addEventListener("open", async event => {
-        console.log(event);
         document.getElementById("mainContainer").classList.remove("displayNone");
         document.getElementById("setupContainer").classList.add("displayNone");
     });
 
     dataChannel.addEventListener("message",  async event => {
-        console.log(event);
         lastSync = JSON.parse(event.data);
         handleSyncState();
     });
 
     createOfferPromise = connection.createOffer().then(
-        async offer => {
-            console.log(offer);
+        async (offer) => {
             connection.setLocalDescription(offer).then(
-                async event => {
-                    console.log(event);
+                async (event) => {
                     PC1SynTextarea.value = JSON.stringify(connection.localDescription);
                 }
             );
         }
-        ).catch(async error => {
+        ).catch(async (error) => {
             console.log(error);
     });
 
@@ -102,6 +94,8 @@ function syncState(){
 
 // sync data has already been parsed and is available in lastSync
 function handleSyncState(){
+
+    //  Prevent too many synchronisation attempts to prevent recursion with due to latency.
     var currentTime = new Date().getTime();
     if (currentTime < timeout){
         console.log("Recieving too many messages, temporarily refusing to process them");
@@ -116,6 +110,7 @@ function handleSyncState(){
         return;
     }
 
+    //  Handle playback events of media mid play
     if (video.currentSrc != lastSync.src){
         video.src = lastSync.src;
         video.load();
@@ -127,6 +122,7 @@ function handleSyncState(){
         video.play();
     }
     
+    //  Swap video if the other peer has changed
     if (currentYTVideo.videoId != lastSync.currentYTVideo.videoId){
         currentYTVideo = lastSync.currentYTVideo;
         shouldGenerateQueue = true;
@@ -163,6 +159,7 @@ function handleSyncState(){
     }
 }
 
+//  Named roughly after TCP handshake, PC1 has recieved PC2's response and the connection fully establishes
 function synAck(){
     try{
         connection = new RTCPeerConnection({
@@ -177,10 +174,8 @@ function synAck(){
     })
 
     connection.addEventListener("datachannel", async event => {
-        console.log(event);
         dataChannel = event.channel;
         dataChannel.onmessage = async event => {
-            console.log(event);
             lastSync = JSON.parse(event.data);
             handleSyncState();
         }
@@ -189,10 +184,6 @@ function synAck(){
     });
 
     connection.addEventListener("iceconnectionstatechange", () => {
-        if (document.getElementById("mainContainer").style.display == "none")
-        {
-            return;
-        }
         if (connection.iceConnectionState == "disconnected"){
             showNotification("The other peer may have disconnected");
         }
@@ -208,19 +199,16 @@ function synAck(){
     });
 
     connection.setRemoteDescription(JSON.parse(PC2SynTextarea.value)).then(
-        async event => {
-            console.log(event);
+        async (event) => {
             connection.createAnswer().then(
-                async answer => {
-                    console.log(event);
+                async (answer) => {
                     connection.setLocalDescription(answer).then(
-                        async event => {
-                            console.log(event);
+                        async (event) => {
                             PC2SynTextarea.value = JSON.stringify(connection.localDescription);
                         })
                 })
         }).catch(
-            async error => {
+            async (error) => {
                 console.log(error);
             }
         );
@@ -233,13 +221,13 @@ function synAck(){
     PC2SynTextarea.readOnly = true;
 }
 
+//  Named roughly after the TCP handshake, PC2 begins to connect to PC1
 function ack(){
     connection.setRemoteDescription(JSON.parse(PC1AckTextarea.value)).then(
         async (event) => {
-            console.log(event);
         }
     ).catch(
-        async error => {
+        async (error) => {
             console.log(error);
         }
     );
@@ -447,6 +435,7 @@ async function generateQueueDisplay(){
         queueList.appendChild(nowPlayingDiv);
     }
 
+    //  Generate the actual queue objects display
     for (var video of queue){
         var queuedVideoDiv = document.createElement("div");
         queuedVideoDiv.className = "queuedVideo";
