@@ -287,7 +287,9 @@ async function _addYoutubeSrc(ID){
         xmlhttp.onload = function() {
             if (this.readyState == 4 && this.status == 200) {
                 console.log("Parsed metadata of: " + ID);
-                resolve(JSON.parse(this.responseText));
+                var retval = JSON.parse(this.responseText);
+                retval.videoThumbnails = retval.videoThumbnails[0].url; //  This contains a lot of unnecessary data that adds network overhead, so remove it.
+                resolve(retval);
             } else{
                 reject(xmlhttp.status);
             }
@@ -430,7 +432,7 @@ async function generateQueueDisplay(){
     if (Object.keys(currentYTVideo).length !== 0){
         var nowPlayingDiv = document.createElement("div");
         nowPlayingDiv.className = "playingVideo";
-        nowPlayingDiv.style.backgroundImage = "URL(" + currentYTVideo.videoThumbnails[0].url +  ")";
+        nowPlayingDiv.style.backgroundImage = "URL(" + currentYTVideo.videoThumbnail +  ")";
         
         var title = document.createElement("p");
         title.innerHTML = "Currently Playing: " + currentYTVideo.title;
@@ -447,7 +449,7 @@ async function generateQueueDisplay(){
     for (var video of queue){
         var queuedVideoDiv = document.createElement("div");
         queuedVideoDiv.className = "queuedVideo";
-        queuedVideoDiv.style.backgroundImage = "URL(" + video.videoThumbnails[0].url + ")";
+        queuedVideoDiv.style.backgroundImage = "URL(" + video.videoThumbnail + ")";
 
         var title = document.createElement("p");
         title.innerHTML = video.title;
