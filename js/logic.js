@@ -17,6 +17,8 @@ var timeout;    //  Unix timestamp to prevent excessive synchronisation events f
 var notificationContainer;    // Div container notification UI
 var notificationContainerText;   // Contents of ^
 var errorMessage;  //  Used to send error messages between peers to show in notifications.
+var canPlay;    //  Used to send a message to the other peer that we are ready to begin playback
+var peerCanPlay;    //  Used to begin playback by determining when the other peer is ready.
 
 function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sending an offer to PC2
     try{
@@ -87,13 +89,24 @@ function syncState(){
         queue: queue,
         src: video.currentSrc,
         currentYTVideo: currentYTVideo,
-        error: errorMessage
+        error: errorMessage,
+        playable: canPlay
     };
     dataChannel.send(JSON.stringify(state));
 }
 
 // sync data has already been parsed and is available in lastSync
 function handleSyncState(){
+
+    //  Ignore the other timeouts below intentionally.
+    if (lastSync.playable == true && canPlay == true){
+        video.play();
+        canPlay = false;
+        peerCanPlay = false;
+        return;
+    } else{
+        peerCanPlay = true;
+    }
 
     //  Prevent too many synchronisation attempts to prevent recursion with due to latency.
     var currentTime = new Date().getTime();
@@ -242,7 +255,7 @@ function addYoutubeSrcVideo(){
 
 // Playlists that I've seen have a specific form, and can handled without regex.
 function addYoutubeSrcPlaylist(URL){
-    var API = "https://invidious.xyz/api/v1/playlists/";
+    var API = "https://invidious.snopyta.org/api/v1/playlists/";
     var ID = new URLSearchParams(URL).get("list");
     var tempQueue = [];
 
@@ -266,7 +279,7 @@ function addYoutubeSrcPlaylist(URL){
 
 async function _addYoutubeSrc(ID){
     return new Promise((resolve, reject) => {
-        var API = "https://invidious.xyz/api/v1/videos/"
+        var API = "https://invidious.snopyta.org/api/v1/videos/"
         var fields = "?fields=videoId,title,formatStreams,videoThumbnails"
 
         var xmlhttp = new XMLHttpRequest();
@@ -315,7 +328,7 @@ function loadNextVideo(){
 
     document.getElementById("videoFrame").src = queue[0].formatStreams[queue[0].formatStreams.length - 1].url;
     currentYTVideo = queue.shift();
-    document.getElementById("videoFrame").play(); // Rely on implicit state sync of play event handler
+    document.getElementById("videoFrame").load(); // Rely on implicit state sync of play event handler
     generateQueueDisplay();
 }
 
@@ -337,6 +350,8 @@ function init(){
     notificationContainer = document.getElementById("notificationsContainer");
     notificationContainerText = document.getElementById("notification");
     errorMessage = "";
+    canPlay = false;
+    peerCanPlay = false;
 
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
@@ -394,15 +409,26 @@ function init(){
     );
 
     video.addEventListener('error', 
-    (error) => {
-        console.log(error);
-        showNotification("Attempt to load video has failed, the peers may not be fully synced as a result.");
-        errorMessage = "The peer failed to play a video from the queue. ( " + currentYTVideo.title + " )";
-        syncState();
-        errorMessage = "";
-    }
-);
+        (error) => {
+            console.log(error);
+            showNotification("Attempt to load video has failed, the peers may not be fully synced as a result.");
+            errorMessage = "The peer failed to play a video from the queue. ( " + currentYTVideo.title + " )";
+            syncState();
+            errorMessage = "";
+        }
+    );
     
+    video.addEventListener('canplay',
+        (event) => {
+            if (peerCanPlay == true){
+                video.play();
+                canPlay = false;
+                peerCanPlay = false;
+            }
+            canPlay = true;
+            syncState();
+        }
+    );
 }
 
 async function generateQueueDisplay(){
