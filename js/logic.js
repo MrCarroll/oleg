@@ -355,11 +355,7 @@ function init(){
 
     document.onkeydown = (event) => {
         if (event.key == 'q'){
-            if (document.getElementById("queueContainer").style.visibility == "hidden"){
-                document.getElementById("queueContainer").style.visibility = "visible";
-            } else{
-                document.getElementById("queueContainer").style.visibility = "hidden";
-            }
+            document.getElementById("queueContainer").classList.toggle("displayNone");
         }
     };
 
