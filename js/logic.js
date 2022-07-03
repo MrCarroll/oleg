@@ -353,7 +353,7 @@ function init(){
     errorMessage = "";
     canPlay = false;
     peerCanPlay = false;
-    backend = "https://invidious.snopyta.org/";
+    backend = "https://vid.puffyan.us/";
 
     PC1SynTextarea.value = "";
     PC1AckTextarea.value = "";
