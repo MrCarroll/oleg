@@ -24,7 +24,7 @@ var backend;    //  Domain name of the backend API server
 function syn(){ // Named roughly after the TCP handshake, syn reflects PC1 sending an offer to PC2
     try{
         connection = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.stunprotocol.org'}]
+            iceServers: [{ urls: 'stun:stunserver.stunprotocol.org'}]
             });
     } catch(exception){
         console.log(exception);
