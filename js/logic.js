@@ -176,7 +176,7 @@ function handleSyncState(){
 function synAck(){
     try{
         connection = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.stunprotocol.org'}]
+            iceServers: [{ urls: 'stun:stunserver.stunprotocol.org'}]
             })
     } catch(error){
         console.log(error);
